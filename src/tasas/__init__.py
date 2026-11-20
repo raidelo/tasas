@@ -66,7 +66,7 @@ def fetch(
 
 
 @app.command()
-def main(
+def _main(
     token: Annotated[
         str,
         typer.Option("--token", "-t", envvar=TOKEN_ENV, help="Token Bearer de la API."),
@@ -112,5 +112,5 @@ def main(
         console.print(f"[dim]Fecha: {d}[/dim]")
 
 
-if __name__ == "__main__":
+def main() -> None:
     app()

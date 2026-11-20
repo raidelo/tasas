@@ -8,8 +8,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-BASE_URL = "https://tasas.eltoque.com"
-DATE_FMT = "%Y-%m-%d %H:%M:%S"
+from tasas.constants import BASE_URL, DATE_FMT, TOKEN_ENV
 
 app = typer.Typer(add_completion=False, help="Tasas de elTOQUE en una tabla.")
 console = Console()
@@ -68,9 +67,7 @@ def fetch(token: str, date_from, date_to, timeout: float) -> dict:
 def main(
     token: Annotated[
         str,
-        typer.Option(
-            "--token", "-t", envvar="ELTOQUE_TOKEN", help="Token Bearer de la API."
-        ),
+        typer.Option("--token", "-t", envvar=TOKEN_ENV, help="Token Bearer de la API."),
     ],
     date_from: Annotated[
         Optional[datetime],

@@ -1,7 +1,7 @@
 """Show elTOQUE informal exchange rates (GET /v1/trmi) in a table."""
 
 from datetime import datetime, timedelta
-from typing import Annotated, Optional
+from typing import Annotated, NoReturn
 
 import httpx
 import typer
@@ -15,12 +15,12 @@ console = Console()
 err = Console(stderr=True)
 
 
-def fail(msg: str) -> None:
+def fail(msg: str) -> NoReturn:
     err.print(f"[red]Error:[/red] {msg}")
     raise typer.Exit(1)
 
 
-def validate_range(date_from: Optional[datetime], date_to: Optional[datetime]) -> None:
+def validate_range(date_from: datetime | None, date_to: datetime | None) -> None:
     if (date_from is None) != (date_to is None):
         raise typer.BadParameter("--from y --to deben usarse juntos")
     if date_from and date_to:
@@ -30,7 +30,9 @@ def validate_range(date_from: Optional[datetime], date_to: Optional[datetime]) -
             raise typer.BadParameter("el intervalo no puede superar 24 horas")
 
 
-def fetch(token: str, date_from, date_to, timeout: float) -> dict:
+def fetch(
+    token: str, date_from: datetime | None, date_to: datetime | None, timeout: float
+) -> dict:
     params = {}
     if date_from and date_to:
         params = {
@@ -70,13 +72,13 @@ def main(
         typer.Option("--token", "-t", envvar=TOKEN_ENV, help="Token Bearer de la API."),
     ],
     date_from: Annotated[
-        Optional[datetime],
+        datetime | None,
         typer.Option(
             "--from", formats=[DATE_FMT], help=f"Inicio ({DATE_FMT.replace('%', '')})."
         ),
     ] = None,
     date_to: Annotated[
-        Optional[datetime],
+        datetime | None,
         typer.Option("--to", formats=[DATE_FMT], help="Fin del intervalo."),
     ] = None,
     timeout: Annotated[
